@@ -5,10 +5,9 @@ public class Problem {
 	public Problem(int initial, int goal){
 		char initc = (char)('a' + initial);
 		char goalc = (char)('a' + goal);
-		this.initial = new Node(initc, null, 0);
+		this.initial = new Node(initc, null);
 		this.goal = new Node(goalc);
 	}
-	
 	
 	public boolean goalTest(Node currentNode){
 		return currentNode.getState()==goal.getState();
@@ -26,9 +25,7 @@ public class Problem {
 		this.initial.setState(state);
 	}
 
-
 	public Node getGoal() {
 		return goal;
-	}
-		
+	}	
 }

@@ -1,3 +1,4 @@
+import geometry.IntPoint;
 
 public class Environment {
 	
@@ -58,4 +59,15 @@ public class Environment {
 		int i2 = (int)(state2 - 'a');
 		return distances[i1][i2];
 	}
+	
+	public static final IntPoint[] coordinates = {
+			new IntPoint(375, 190), new IntPoint(375, 100), new IntPoint(100, 100), new IntPoint(100, 190),
+			new IntPoint(287, 375), new IntPoint(250, 225), new IntPoint(325, 225), new IntPoint(385, 440),
+			new IntPoint(425, 385), new IntPoint(330, 325), new IntPoint(330, 430), new IntPoint(550, 430),
+			new IntPoint(550, 250), new IntPoint(450, 250), new IntPoint(450, 430), new IntPoint(485, 200), 
+			new IntPoint(400, 150), new IntPoint(380, 280), new IntPoint(601, 435), new IntPoint(650, 400),
+			new IntPoint(625, 225), new IntPoint(575, 405) 
+	};
+	
+	
 }

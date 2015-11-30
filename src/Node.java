@@ -4,23 +4,28 @@ public class Node {
 	private Node parentNode;
 	private int depth;
 	private double path_cost;
+	private double total_path_cost;
 	
-	public Node(char name, Node parentNode, int depth){
+	public Node(char name, Node parentNode){
 		this(name);
 		this.parentNode = parentNode;
-		this.depth = depth;
+		this.depth = parentNode == null ? 0 : parentNode.getDepth() + 1;
 		this.path_cost = calculatePathCost();
+		this.total_path_cost = calculateTotalPathCost();
 		
 	}
 	
-	private double calculatePathCost() {
-		if (parentNode == null){
-			System.out.println("Warning, 0 path cost");
+	private double calculateTotalPathCost() {
+		if (parentNode == null)
 			return 0;
-		}
-		
 		double distance = Environment.getDistance(state, parentNode.getState());
 		return parentNode.getPathCost() + distance;
+	}
+	
+	private double calculatePathCost() {
+		if (parentNode == null)
+			return 0;
+		return Environment.getDistance(state, parentNode.getState());
 	}
 
 	public Node(char name) {
@@ -33,6 +38,10 @@ public class Node {
 	
 	public double getPathCost(){
 		return path_cost;
+	}
+	
+	public double getTotalPathCost(){
+		return total_path_cost;
 	}
 	
 	public int getDepth(){
