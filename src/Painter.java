@@ -176,18 +176,8 @@ private final EasyGui gui;
 		go(startPoint, goalPoint);
 	}
 	
-	/**
-	 * Set the robot moving towards a goal on the screen with set radius, step size, etc.
-	 * @param start The coordinates of the starting point
-	 * @param goal The coordinates of the goal
-	 * @param goalRad The radius of the goal - if the robot falls within this, it wins
-	 * @param robotRadius The width of the robot
-	 * @param robotSensorRange How far the robot can 'see'
-	 * @param robotSensorDensity The number of sensor lines the robot can use
-	 * @param robotSpeed The number of moves per second
-	 * */
-	public void go(int startPoint, int goalPoint) throws InterruptedException
-	{
+	
+	public void go(int startPoint, int goalPoint) throws InterruptedException{
 		//Disable all buttons while robot is active
 		gui.setButtonEnabled(buttonId, false);
 		gui.setButtonEnabled(breadthFirstSearchID, false);
@@ -215,17 +205,15 @@ private final EasyGui gui;
 			result = s.search();	
 			break;
 		default:
+			s = new BreadthFirstSearch(p);
+			result = s.search();
 			break;
-		}
-		
-		
-		//Create the robot, start & end points, renderables
+		}	
 
 		RenderablePolyline path = new RenderablePolyline();
-		
 		path.setProperties(Color.ORANGE, 2f);
-	
-		//Draw the initial set up
+		
+		ArrayList<Node> explored = s.getExplored();
 		gui.clearGraphicsPanel();
 		
 		if(result == null) {
@@ -240,20 +228,36 @@ private final EasyGui gui;
 			return;
 		}
 		
+		for(Node n: explored) {
+			Thread.sleep(800);
+			int state = (int)(n.getState() - 'a');
+			IntPoint to_draw = Environment.coordinates[state];
+			drawPoint(to_draw.x, to_draw.y);
+			if (n.getState() == result.get(0).getState()){
+				Thread.sleep(800);
+				path.addPoint(to_draw.x, to_draw.y);
+				drawRobot(to_draw.x, to_draw.y);
+				gui.draw(path);
+				result.remove(0);
+				gui.update();
+				drawObstacles();
+				continue;
+			}
+			gui.update();
+			drawObstacles();
+		}
 		
-		//Loop until the robot reaches the goal or gets stuck
 		for(Node n: result) {
 			Thread.sleep(800);
 			int state = (int)(n.getState() - 'a');
 			IntPoint to_draw = Environment.coordinates[state];
 			path.addPoint(to_draw.x, to_draw.y);
+			drawRobot(to_draw.x, to_draw.y);
 			gui.draw(path);
 			gui.update();
 			drawObstacles();
-			drawRobot(to_draw.x, to_draw.y);
-			System.out.println(n.getState());
-
 		}
+		
 		
 		//Re-enable buttons when finished
 		gui.setButtonEnabled(buttonId, true);
@@ -261,6 +265,14 @@ private final EasyGui gui;
 		gui.setButtonEnabled(uniformCosrtSearchID, true);
 		gui.setButtonEnabled(greedyBesrFirstSearchID, true);
 		gui.setButtonEnabled(aStarSearchID, true);
+	}
+	
+	private void drawPoint(int x, int y)  {
+		RenderablePoint point = new RenderablePoint(x, y);
+		point.setProperties(Color.GREEN, 6);
+		gui.draw(point);
+		gui.update();
+		
 	}
 	
 	

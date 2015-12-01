@@ -19,7 +19,7 @@ public class Node {
 		if (parentNode == null)
 			return 0;
 		double distance = Environment.getDistance(state, parentNode.getState());
-		return parentNode.getPathCost() + distance;
+		return parentNode.getTotalPathCost() + distance;
 	}
 	
 	private double calculatePathCost() {

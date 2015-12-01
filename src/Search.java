@@ -2,9 +2,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public abstract class Search {
+	Problem problem;
+	Node currentNode;
+	protected ArrayList<Node>  queue;
+	ArrayList<Node> explored;
 	
-	public abstract ArrayList<Node> search();
-	public abstract void addToQueue(Node node);
+	public Search(Problem p){
+		problem = p;
+	}
 	
 	public boolean queueEmpty(ArrayList<Node>  queue) {
 		return queue.size() == 0;
@@ -31,6 +36,8 @@ public abstract class Search {
 	}
 	
 	public boolean explored(Node n, ArrayList<Node> explored){
+		if (explored== null)
+			return false;
 		for (int i = 0; i < explored.size(); i++){
 			if (explored.get(i).getState()==n.getState())
 				return true;
@@ -49,6 +56,44 @@ public abstract class Search {
 		queue.remove(index);
 		queue.add(index, node2);
 		return queue;
+	}
+	
+	public ArrayList<Node> search(){
+		currentNode = problem.getInitial();
+		queue = new ArrayList<Node>();
+		explored = new ArrayList<Node>();
+		queuingFn(currentNode);
+		while(true){
+			if (queueEmpty(queue)){
+				return null;
+			}
+			currentNode = pop(queue);
+			if (problem.goalTest(currentNode)){
+				ArrayList<Node> res = solution(currentNode, problem);
+				System.out.println("Res length " + res.size());
+				return res;
+			}
+			explored.add(currentNode);
+			processChildren(currentNode);
+		}
+		
+	}
+	
+	public abstract void queuingFn(Node node);
+	
+	public void processChildren(Node n) {
+		int current_state_index = n.getState() - 'a';
+		for (int i =0; i < 22; i++){
+			if (Environment.visibility[current_state_index][i]==1){
+				char name = (char)('a' + i);
+				Node childNode = new Node(name, n);
+				queuingFn(childNode);
+			}
+		}
+	}
+	
+	public ArrayList<Node> getExplored() {
+		return explored;
 	}
 	
 }

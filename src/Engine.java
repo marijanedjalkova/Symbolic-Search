@@ -1,52 +1,82 @@
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Engine {
-	
+	static int[] resLengths = new int[]{0, 0, 0, 0};
+	static int[] explLengths = new int[]{0, 0, 0, 0};
 	
 	public static void main(String[] args){
-		Scanner in = new Scanner(System.in);
-		System.out.println("Please choose the search type");
-		System.out.println("1 - BF Search");
-		System.out.println("2 - Uniform-cost Search");
-		System.out.println("3 - Greedy Best Search");
-		System.out.println("4 - A* Search");
-		char input = in.next().charAt(0);
-		in.close();
-		generalSearch(input);
-		
+		for (int i = 0; i < 22; i++){
+			for (int j = 0; j < 22; j++){
+				for (int k = 0; k< SearchEnum.values().length; k++){
+					generalSearch(SearchEnum.values()[k], i, j);
+				}
+			}
+		}
+		double[] resAvgs = new double[4];
+		double[] explAvgs = new double[4];
+		for (int i = 0; i < 4; i++){
+			resAvgs[i] = (double)resLengths[i] / (22*22);
+			System.out.print("For enum " + SearchEnum.values()[i]);
+			System.out.print(" Res " + resAvgs[i]);
+			explAvgs[i] = (double)explLengths[i] / (22*22);
+			System.out.println(" Expl " + explAvgs[i]);
+		}
 	}
 	
-	public static void generalSearch(char input){
-		Problem p = new Problem(3, 21);
+	public static void generalSearch(SearchEnum search_type, int start, int finish){
+		Problem p = new Problem(start, finish);
 		ArrayList<Node> result = null;
+		ArrayList<Node> expl;
 		Search s;
-		switch (input) {
-		case '1':
+		int resSize;
+		int explSize;
+		switch (search_type) {
+		case BREADTHFIRSTSEARCH:
 			s = new BreadthFirstSearch(p);
-			result = s.search();			
+			result = s.search();
+			expl = s.getExplored();
+			resSize = (result == null ? 0 : result.size());
+			explSize = (expl == null ? 0 : expl.size());
+			updateArrays(0, resSize, explSize);
 			break;
-		case '2':
+		case UNIFORMCOSTSEARCH:
 			s = new UniformCostSearch(p);
-			result = s.search();	
+			result = s.search();
+			expl = s.getExplored();
+			resSize = (result == null ? 0 : result.size());
+			explSize = (expl == null ? 0 : expl.size());
+			updateArrays(1, resSize, explSize);
 			break;
-		case '3':
+		case GREEDYBESTFIRSTSEARCH:
 			s = new GreedyBestSearch(p);
-			result = s.search();	
+			result = s.search();
+			expl = s.getExplored();
+			resSize = (result == null ? 0 : result.size());
+			explSize = (expl == null ? 0 : expl.size());
+			updateArrays(2, resSize, explSize);
 			break;
-		case '4':
+		case ASTARSEARCH:
 			s = new AStarSearch(p);
-			result = s.search();	
+			result = s.search();
+			expl = s.getExplored();
+			resSize = (result == null ? 0 : result.size());
+			explSize = (expl == null ? 0 : expl.size());
+			updateArrays(3, resSize, explSize);
 			break;
 		default:
+			s = new BreadthFirstSearch(p);
+			result = s.search();
+			expl = s.getExplored();
+			resSize = (result == null ? 0 : result.size());
+			explSize = (expl == null ? 0 : expl.size());
+			updateArrays(4, resSize, explSize);
 			break;
 		}
-		System.out.println("Result: ");
-		for (Node n : result){
-			System.out.println(n.getState() - 'a');
-			
-		}
-		System.out.println("Done.");
+	}
+	
+	static void updateArrays(int index, int res, int expl){
+		resLengths[index] += res;
+		explLengths[index] += expl;
 	}
 
 }
